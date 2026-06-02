@@ -6,6 +6,7 @@ export default function InquiryModal({
   name,
   contact,
   message,
+  isSubmitting = false,
   onChangeName,
   onChangeContact,
   onChangeMessage,
@@ -17,10 +18,18 @@ export default function InquiryModal({
       <View style={styles.modalOverlay}>
         <View style={styles.modalCard}>
           <Text style={styles.modalTitle}>Send email inquiry</Text>
-          <Text style={styles.modalText}>Enter your contact information and a clear message for the provider.</Text>
+          <Text style={styles.modalText}>Enter your email address and a clear message for the provider.</Text>
 
-          <TextInput value={name} onChangeText={onChangeName} placeholder="Your name" style={styles.modalInput} />
-          <TextInput value={contact} onChangeText={onChangeContact} placeholder="Phone or email" style={styles.modalInput} />
+          <TextInput value={name} onChangeText={onChangeName} placeholder="Your name" style={styles.modalInput} editable={!isSubmitting} />
+          <TextInput
+            value={contact}
+            onChangeText={onChangeContact}
+            placeholder="Your email address"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            style={styles.modalInput}
+            editable={!isSubmitting}
+          />
           <TextInput
             value={message}
             onChangeText={onChangeMessage}
@@ -28,12 +37,17 @@ export default function InquiryModal({
             multiline
             numberOfLines={4}
             style={[styles.modalInput, styles.messageInput]}
+            editable={!isSubmitting}
           />
 
-          <TouchableOpacity style={styles.primaryButton} onPress={onSubmit}>
-            <Text style={styles.primaryButtonText}>Submit inquiry</Text>
+          <TouchableOpacity
+            style={[styles.primaryButton, isSubmitting && styles.primaryButtonDisabled]}
+            onPress={onSubmit}
+            disabled={isSubmitting}
+          >
+            <Text style={styles.primaryButtonText}>{isSubmitting ? 'Sending...' : 'Submit inquiry'}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.modalCancelButton} onPress={onClose}>
+          <TouchableOpacity style={styles.modalCancelButton} onPress={onClose} disabled={isSubmitting}>
             <Text style={styles.modalCancelText}>Cancel</Text>
           </TouchableOpacity>
         </View>
@@ -87,6 +101,9 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     alignItems: 'center',
     marginBottom: 10
+  },
+  primaryButtonDisabled: {
+    opacity: 0.65
   },
   primaryButtonText: {
     color: '#ffffff',
