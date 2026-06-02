@@ -19,6 +19,7 @@ import { CATEGORIES, DEFAULT_CITY } from './src/utils/constants';
 export default function App() {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('All Categories');
+  const [categoryOpen, setCategoryOpen] = useState(false);
   const [screen, setScreen] = useState('home');
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [selectedProviderId, setSelectedProviderId] = useState(null);
@@ -83,6 +84,11 @@ export default function App() {
       return;
     }
     closeToHome();
+  };
+
+  const handleCategorySelect = (item) => {
+    setCategory(item);
+    setCategoryOpen(false);
   };
 
   const handleWhatsAppPress = async () => {
@@ -157,17 +163,13 @@ export default function App() {
         style={styles.searchInput}
       />
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryRow}>
-        {CATEGORIES.map((item) => (
-          <TouchableOpacity
-            key={item}
-            onPress={() => setCategory(item)}
-            style={[styles.categoryPill, category === item && styles.categoryPillActive]}
-          >
-            <Text style={[styles.categoryText, category === item && styles.categoryTextActive]}>{item}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      <TouchableOpacity style={styles.dropdownButton} onPress={() => setCategoryOpen(true)}>
+        <View>
+          <Text style={styles.dropdownLabel}>Category</Text>
+          <Text style={styles.dropdownValue}>{category}</Text>
+        </View>
+        <Text style={styles.dropdownArrow}>v</Text>
+      </TouchableOpacity>
 
       <View style={styles.sectionHeaderRow}>
         <Text style={styles.sectionTitle}>Available services</Text>
@@ -256,6 +258,24 @@ export default function App() {
       {screen === 'home' && renderHome()}
       {screen === 'detail' && renderDetail()}
       {screen === 'provider' && renderProvider()}
+
+      <Modal visible={categoryOpen} transparent animationType="slide" onRequestClose={() => setCategoryOpen(false)}>
+        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setCategoryOpen(false)}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Choose category</Text>
+            <Text style={styles.modalText}>Filter listings by the service type you need.</Text>
+            {CATEGORIES.map((item) => (
+              <TouchableOpacity key={item} style={styles.categoryOption} onPress={() => handleCategorySelect(item)}>
+                <Text style={[styles.categoryOptionText, category === item && styles.categoryOptionTextActive]}>{item}</Text>
+                {category === item && <Text style={styles.selectedMark}>Selected</Text>}
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity style={styles.modalCancelButton} onPress={() => setCategoryOpen(false)}>
+              <Text style={styles.modalCancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
 
       <Modal visible={inquiryOpen} transparent animationType="slide" onRequestClose={() => setInquiryOpen(false)}>
         <View style={styles.modalOverlay}>
@@ -346,28 +366,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 12
   },
-  categoryRow: {
-    marginBottom: 16
-  },
-  categoryPill: {
+  dropdownButton: {
     backgroundColor: '#ffffff',
     borderColor: '#e5e7eb',
     borderWidth: 1,
-    borderRadius: 99,
-    paddingHorizontal: 14,
-    paddingVertical: 9,
-    marginRight: 8
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 13,
+    marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
-  categoryPillActive: {
-    backgroundColor: '#15803d',
-    borderColor: '#15803d'
+  dropdownLabel: {
+    color: '#6b7280',
+    fontSize: 12,
+    fontWeight: '800',
+    marginBottom: 3
   },
-  categoryText: {
-    color: '#374151',
-    fontWeight: '700'
+  dropdownValue: {
+    color: '#111827',
+    fontSize: 16,
+    fontWeight: '900'
   },
-  categoryTextActive: {
-    color: '#ffffff'
+  dropdownArrow: {
+    color: '#166534',
+    fontSize: 20,
+    fontWeight: '900'
   },
   sectionHeaderRow: {
     flexDirection: 'row',
@@ -593,7 +618,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
-    padding: 20
+    padding: 20,
+    maxHeight: '82%'
   },
   modalTitle: {
     color: '#111827',
@@ -620,6 +646,27 @@ const styles = StyleSheet.create({
   messageInput: {
     minHeight: 96,
     textAlignVertical: 'top'
+  },
+  categoryOption: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+    paddingVertical: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  categoryOptionText: {
+    color: '#111827',
+    fontSize: 16,
+    fontWeight: '800'
+  },
+  categoryOptionTextActive: {
+    color: '#15803d'
+  },
+  selectedMark: {
+    color: '#15803d',
+    fontSize: 12,
+    fontWeight: '900'
   },
   modalCancelButton: {
     alignItems: 'center',
