@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -6,8 +6,13 @@ import HomeScreen from './src/screens/HomeScreen';
 import SkillDetailScreen from './src/screens/SkillDetailScreen';
 import ProviderProfileScreen from './src/screens/ProviderProfileScreen';
 import InquiryModal from './src/components/InquiryModal';
-import { mockSkills, getProviderById, getSkillsByProviderId } from './src/data/mockSkills';
 import { openWhatsAppForSkill } from './src/services/whatsappService';
+import {
+  getProviderFromDataSource,
+  getProviderSkillsFromDataSource,
+  getSimilarSkillsFromDataSource,
+  searchSkillsFromDataSource
+} from './src/services/skillDataService';
 import { validateInquiry } from './src/utils/validators';
 
 export default function App() {
@@ -15,60 +20,72 @@ export default function App() {
   const [category, setCategory] = useState('All Categories');
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [screen, setScreen] = useState('home');
+  const [skills, setSkills] = useState([]);
   const [selectedSkill, setSelectedSkill] = useState(null);
-  const [selectedProviderId, setSelectedProviderId] = useState(null);
+  const [activeProvider, setActiveProvider] = useState(null);
+  const [profileProvider, setProfileProvider] = useState(null);
+  const [providerSkills, setProviderSkills] = useState([]);
+  const [similarSkills, setSimilarSkills] = useState([]);
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const [inquiryName, setInquiryName] = useState('');
   const [inquiryContact, setInquiryContact] = useState('');
   const [inquiryMessage, setInquiryMessage] = useState('');
 
-  const filteredSkills = useMemo(() => {
-    const cleanQuery = query.trim().toLowerCase();
+  useEffect(() => {
+    let mounted = true;
 
-    return mockSkills.filter((skill) => {
-      const provider = getProviderById(skill.providerId);
-      const matchesCategory = category === 'All Categories' || skill.category === category;
-      const searchableText = [
-        skill.title,
-        skill.category,
-        skill.city,
-        skill.region,
-        skill.area,
-        skill.shortDescription,
-        skill.description,
-        provider?.name
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
+    const loadSkills = async () => {
+      try {
+        const results = await searchSkillsFromDataSource({ query, category });
+        if (mounted) setSkills(results);
+      } catch (error) {
+        if (mounted) {
+          setSkills([]);
+          Alert.alert('Unable to load services', 'Please check your connection and try again.');
+        }
+      }
+    };
 
-      return matchesCategory && (cleanQuery.length === 0 || searchableText.includes(cleanQuery));
-    });
-  }, [category, query]);
+    loadSkills();
 
-  const activeSkill = selectedSkill;
-  const activeProvider = activeSkill ? getProviderById(activeSkill.providerId) : null;
-  const profileProvider = selectedProviderId ? getProviderById(selectedProviderId) : activeProvider;
-  const providerSkills = profileProvider ? getSkillsByProviderId(profileProvider.id) : [];
-  const similarSkills = activeSkill
-    ? mockSkills.filter((skill) => skill.id !== activeSkill.id && skill.category === activeSkill.category).slice(0, 4)
-    : [];
+    return () => {
+      mounted = false;
+    };
+  }, [query, category]);
 
-  const openSkillDetail = (skill) => {
-    setSelectedSkill(skill);
-    setSelectedProviderId(skill.providerId);
-    setScreen('detail');
+  const openSkillDetail = async (skill) => {
+    try {
+      setSelectedSkill(skill);
+      const provider = await getProviderFromDataSource(skill.providerId);
+      const similar = await getSimilarSkillsFromDataSource(skill);
+      setActiveProvider(provider);
+      setProfileProvider(provider);
+      setSimilarSkills(similar);
+      setScreen('detail');
+    } catch (error) {
+      Alert.alert('Unable to open service', 'Please try again.');
+    }
   };
 
-  const openProviderProfile = (providerId) => {
-    setSelectedProviderId(providerId);
-    setScreen('provider');
+  const openProviderProfile = async (providerId) => {
+    try {
+      const provider = await getProviderFromDataSource(providerId);
+      const listings = await getProviderSkillsFromDataSource(providerId);
+      setProfileProvider(provider);
+      setProviderSkills(listings);
+      setScreen('provider');
+    } catch (error) {
+      Alert.alert('Unable to open provider profile', 'Please try again.');
+    }
   };
 
   const closeToHome = () => {
     setScreen('home');
     setSelectedSkill(null);
-    setSelectedProviderId(null);
+    setActiveProvider(null);
+    setProfileProvider(null);
+    setProviderSkills([]);
+    setSimilarSkills([]);
   };
 
   const handleBack = () => {
@@ -86,15 +103,15 @@ export default function App() {
 
   const handleWhatsAppPress = async () => {
     try {
-      await openWhatsAppForSkill({ provider: activeProvider, skill: activeSkill });
+      await openWhatsAppForSkill({ provider: activeProvider, skill: selectedSkill });
     } catch (error) {
       Alert.alert('WhatsApp unavailable', `Please contact ${activeProvider?.name || 'the provider'} directly.`);
     }
   };
 
   const handleOpenInquiry = () => {
-    if (activeSkill) {
-      setInquiryMessage(`Hello, I am interested in ${activeSkill.title}. Please contact me with more details.`);
+    if (selectedSkill) {
+      setInquiryMessage(`Hello, I am interested in ${selectedSkill.title}. Please contact me with more details.`);
     }
     setInquiryOpen(true);
   };
@@ -124,7 +141,7 @@ export default function App() {
           query={query}
           category={category}
           categoryOpen={categoryOpen}
-          skills={filteredSkills}
+          skills={skills}
           onChangeQuery={setQuery}
           onOpenCategory={() => setCategoryOpen(true)}
           onCloseCategory={() => setCategoryOpen(false)}
@@ -135,7 +152,7 @@ export default function App() {
 
       {screen === 'detail' && (
         <SkillDetailScreen
-          skill={activeSkill}
+          skill={selectedSkill}
           provider={activeProvider}
           similarSkills={similarSkills}
           onBack={handleBack}
