@@ -2,12 +2,14 @@ import React from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function CategoryDropdown({ categories, selectedCategory, visible, onOpen, onClose, onSelect }) {
+  const selectedOption = categories.find((item) => item.value === selectedCategory) || categories[0];
+
   return (
     <>
       <TouchableOpacity style={styles.dropdownButton} onPress={onOpen}>
         <View>
           <Text style={styles.dropdownLabel}>Category</Text>
-          <Text style={styles.dropdownValue}>{selectedCategory}</Text>
+          <Text style={styles.dropdownValue}>{selectedOption?.label || 'All'}</Text>
         </View>
         <Text style={styles.dropdownArrow}>v</Text>
       </TouchableOpacity>
@@ -18,11 +20,11 @@ export default function CategoryDropdown({ categories, selectedCategory, visible
             <Text style={styles.modalTitle}>Choose category</Text>
             <Text style={styles.modalText}>Filter listings by the service type you need.</Text>
             {categories.map((item) => (
-              <TouchableOpacity key={item} style={styles.categoryOption} onPress={() => onSelect(item)}>
-                <Text style={[styles.categoryOptionText, selectedCategory === item && styles.categoryOptionTextActive]}>
-                  {item}
+              <TouchableOpacity key={item.value || 'all'} style={styles.categoryOption} onPress={() => onSelect(item.value)}>
+                <Text style={[styles.categoryOptionText, selectedCategory === item.value && styles.categoryOptionTextActive]}>
+                  {item.label}
                 </Text>
-                {selectedCategory === item && <Text style={styles.selectedMark}>Selected</Text>}
+                {selectedCategory === item.value && <Text style={styles.selectedMark}>Selected</Text>}
               </TouchableOpacity>
             ))}
             <TouchableOpacity style={styles.modalCancelButton} onPress={onClose}>
