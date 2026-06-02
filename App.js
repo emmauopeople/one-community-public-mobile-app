@@ -3,7 +3,6 @@ import {
   Alert,
   Image,
   Linking,
-  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,6 +12,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import SkillCard from './src/components/SkillCard';
+import CategoryDropdown from './src/components/CategoryDropdown';
+import InquiryModal from './src/components/InquiryModal';
 import { mockSkills, getProviderById, getSkillsByProviderId } from './src/data/mockSkills';
 import { CATEGORIES, DEFAULT_CITY } from './src/utils/constants';
 
@@ -48,8 +50,7 @@ export default function App() {
         .join(' ')
         .toLowerCase();
 
-      const matchesQuery = cleanQuery.length === 0 || searchableText.includes(cleanQuery);
-      return matchesCategory && matchesQuery;
+      return matchesCategory && (cleanQuery.length === 0 || searchableText.includes(cleanQuery));
     });
   }, [category, query]);
 
@@ -132,15 +133,12 @@ export default function App() {
     </View>
   );
 
-  const renderSkillCard = (skill, compact = false) => (
-    <TouchableOpacity key={skill.id} style={styles.gridCard} onPress={() => openSkillDetail(skill)}>
-      <Image source={{ uri: skill.imageUrl }} style={[styles.gridImage, compact && styles.gridImageSmall]} />
-      <View style={styles.cardContent}>
-        <Text numberOfLines={2} style={styles.gridTitle}>{skill.title}</Text>
-        <Text numberOfLines={1} style={styles.gridMeta}>{skill.city} - {skill.category}</Text>
-        <Text numberOfLines={1} style={styles.gridTrust}>{skill.trustLabel}</Text>
-      </View>
-    </TouchableOpacity>
+  const renderSkillGrid = (skills, compact = false) => (
+    <View style={styles.grid}>
+      {skills.map((skill) => (
+        <SkillCard key={skill.id} skill={skill} compact={compact} onPress={openSkillDetail} />
+      ))}
+    </View>
   );
 
   const renderHome = () => (
@@ -163,13 +161,14 @@ export default function App() {
         style={styles.searchInput}
       />
 
-      <TouchableOpacity style={styles.dropdownButton} onPress={() => setCategoryOpen(true)}>
-        <View>
-          <Text style={styles.dropdownLabel}>Category</Text>
-          <Text style={styles.dropdownValue}>{category}</Text>
-        </View>
-        <Text style={styles.dropdownArrow}>v</Text>
-      </TouchableOpacity>
+      <CategoryDropdown
+        categories={CATEGORIES}
+        selectedCategory={category}
+        visible={categoryOpen}
+        onOpen={() => setCategoryOpen(true)}
+        onClose={() => setCategoryOpen(false)}
+        onSelect={handleCategorySelect}
+      />
 
       <View style={styles.sectionHeaderRow}>
         <Text style={styles.sectionTitle}>Available services</Text>
@@ -182,7 +181,7 @@ export default function App() {
           <Text style={styles.emptyText}>Try a simple word like carpenter, tailor, electrical, Douala, or Yaounde.</Text>
         </View>
       ) : (
-        <View style={styles.grid}>{filteredSkills.map((skill) => renderSkillCard(skill))}</View>
+        renderSkillGrid(filteredSkills)
       )}
     </ScrollView>
   );
@@ -216,11 +215,7 @@ export default function App() {
         </View>
 
         <Text style={styles.sectionTitle}>Similar listings</Text>
-        {similarSkills.length === 0 ? (
-          <Text style={styles.emptyText}>No similar listings yet.</Text>
-        ) : (
-          <View style={styles.grid}>{similarSkills.map((skill) => renderSkillCard(skill, true))}</View>
-        )}
+        {similarSkills.length === 0 ? <Text style={styles.emptyText}>No similar listings yet.</Text> : renderSkillGrid(similarSkills, true)}
       </ScrollView>
     );
   };
@@ -242,7 +237,7 @@ export default function App() {
           <Text style={styles.sectionTitle}>Provider listings</Text>
           <Text style={styles.resultCount}>{providerSkills.length} skills</Text>
         </View>
-        <View style={styles.grid}>{providerSkills.map((skill) => renderSkillCard(skill, true))}</View>
+        {renderSkillGrid(providerSkills, true)}
 
         <View style={styles.reviewsBox}>
           <Text style={styles.providerName}>Reviews coming soon</Text>
@@ -259,50 +254,17 @@ export default function App() {
       {screen === 'detail' && renderDetail()}
       {screen === 'provider' && renderProvider()}
 
-      <Modal visible={categoryOpen} transparent animationType="slide" onRequestClose={() => setCategoryOpen(false)}>
-        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setCategoryOpen(false)}>
-          <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Choose category</Text>
-            <Text style={styles.modalText}>Filter listings by the service type you need.</Text>
-            {CATEGORIES.map((item) => (
-              <TouchableOpacity key={item} style={styles.categoryOption} onPress={() => handleCategorySelect(item)}>
-                <Text style={[styles.categoryOptionText, category === item && styles.categoryOptionTextActive]}>{item}</Text>
-                {category === item && <Text style={styles.selectedMark}>Selected</Text>}
-              </TouchableOpacity>
-            ))}
-            <TouchableOpacity style={styles.modalCancelButton} onPress={() => setCategoryOpen(false)}>
-              <Text style={styles.modalCancelText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
-
-      <Modal visible={inquiryOpen} transparent animationType="slide" onRequestClose={() => setInquiryOpen(false)}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Send email inquiry</Text>
-            <Text style={styles.modalText}>Enter your contact information and a clear message for the provider.</Text>
-
-            <TextInput value={inquiryName} onChangeText={setInquiryName} placeholder="Your name" style={styles.modalInput} />
-            <TextInput value={inquiryContact} onChangeText={setInquiryContact} placeholder="Phone or email" style={styles.modalInput} />
-            <TextInput
-              value={inquiryMessage}
-              onChangeText={setInquiryMessage}
-              placeholder="Message"
-              multiline
-              numberOfLines={4}
-              style={[styles.modalInput, styles.messageInput]}
-            />
-
-            <TouchableOpacity style={styles.primaryButton} onPress={handleSubmitInquiry}>
-              <Text style={styles.primaryButtonText}>Submit inquiry</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.modalCancelButton} onPress={() => setInquiryOpen(false)}>
-              <Text style={styles.modalCancelText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <InquiryModal
+        visible={inquiryOpen}
+        name={inquiryName}
+        contact={inquiryContact}
+        message={inquiryMessage}
+        onChangeName={setInquiryName}
+        onChangeContact={setInquiryContact}
+        onChangeMessage={setInquiryMessage}
+        onSubmit={handleSubmitInquiry}
+        onClose={() => setInquiryOpen(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -366,34 +328,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 12
   },
-  dropdownButton: {
-    backgroundColor: '#ffffff',
-    borderColor: '#e5e7eb',
-    borderWidth: 1,
-    borderRadius: 18,
-    paddingHorizontal: 16,
-    paddingVertical: 13,
-    marginBottom: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-  dropdownLabel: {
-    color: '#6b7280',
-    fontSize: 12,
-    fontWeight: '800',
-    marginBottom: 3
-  },
-  dropdownValue: {
-    color: '#111827',
-    fontSize: 16,
-    fontWeight: '900'
-  },
-  dropdownArrow: {
-    color: '#166534',
-    fontSize: 20,
-    fontWeight: '900'
-  },
   sectionHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -414,43 +348,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between'
-  },
-  gridCard: {
-    width: '48.5%',
-    backgroundColor: '#ffffff',
-    borderRadius: 18,
-    marginBottom: 12,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#e5e7eb'
-  },
-  gridImage: {
-    width: '100%',
-    height: 150,
-    backgroundColor: '#dcfce7'
-  },
-  gridImageSmall: {
-    height: 130
-  },
-  cardContent: {
-    padding: 10
-  },
-  gridTitle: {
-    color: '#111827',
-    fontSize: 15,
-    fontWeight: '900',
-    marginBottom: 4
-  },
-  gridMeta: {
-    color: '#6b7280',
-    fontSize: 12,
-    fontWeight: '700',
-    marginBottom: 5
-  },
-  gridTrust: {
-    color: '#15803d',
-    fontSize: 11,
-    fontWeight: '900'
   },
   topBar: {
     flexDirection: 'row',
@@ -608,72 +505,5 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: '#6b7280'
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(17, 24, 39, 0.55)',
-    justifyContent: 'flex-end'
-  },
-  modalCard: {
-    backgroundColor: '#ffffff',
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    padding: 20,
-    maxHeight: '82%'
-  },
-  modalTitle: {
-    color: '#111827',
-    fontSize: 22,
-    fontWeight: '900',
-    marginBottom: 6
-  },
-  modalText: {
-    color: '#6b7280',
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 14
-  },
-  modalInput: {
-    backgroundColor: '#f8fafc',
-    borderColor: '#e5e7eb',
-    borderWidth: 1,
-    borderRadius: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 13,
-    fontSize: 15,
-    marginBottom: 10
-  },
-  messageInput: {
-    minHeight: 96,
-    textAlignVertical: 'top'
-  },
-  categoryOption: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
-    paddingVertical: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-  categoryOptionText: {
-    color: '#111827',
-    fontSize: 16,
-    fontWeight: '800'
-  },
-  categoryOptionTextActive: {
-    color: '#15803d'
-  },
-  selectedMark: {
-    color: '#15803d',
-    fontSize: 12,
-    fontWeight: '900'
-  },
-  modalCancelButton: {
-    alignItems: 'center',
-    paddingVertical: 12
-  },
-  modalCancelText: {
-    color: '#6b7280',
-    fontWeight: '800'
   }
 });
