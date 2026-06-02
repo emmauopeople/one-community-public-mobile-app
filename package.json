@@ -1,0 +1,29 @@
+{
+  "name": "one-community-public-mobile-app",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@react-navigation/native": "latest",
+    "@react-navigation/native-stack": "latest",
+    "axios": "latest",
+    "expo": "latest",
+    "expo-location": "latest",
+    "expo-status-bar": "latest",
+    "react": "latest",
+    "react-native": "latest",
+    "react-native-safe-area-context": "latest",
+    "react-native-screens": "latest"
+  },
+  "devDependencies": {
+    "@babel/core": "latest",
+    "eslint": "latest"
+  }
+}
