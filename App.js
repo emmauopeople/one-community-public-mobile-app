@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Alert, Linking, StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import HomeScreen from './src/screens/HomeScreen';
@@ -7,6 +7,8 @@ import SkillDetailScreen from './src/screens/SkillDetailScreen';
 import ProviderProfileScreen from './src/screens/ProviderProfileScreen';
 import InquiryModal from './src/components/InquiryModal';
 import { mockSkills, getProviderById, getSkillsByProviderId } from './src/data/mockSkills';
+import { openWhatsAppForSkill } from './src/services/whatsappService';
+import { validateInquiry } from './src/utils/validators';
 
 export default function App() {
   const [query, setQuery] = useState('');
@@ -83,14 +85,10 @@ export default function App() {
   };
 
   const handleWhatsAppPress = async () => {
-    if (!activeProvider || !activeSkill) return;
-    const message = `Hello, I found your service on One Community. I am interested in ${activeSkill.title}.`;
-    const url = `https://wa.me/${activeProvider.whatsapp}?text=${encodeURIComponent(message)}`;
-
     try {
-      await Linking.openURL(url);
+      await openWhatsAppForSkill({ provider: activeProvider, skill: activeSkill });
     } catch (error) {
-      Alert.alert('WhatsApp unavailable', `Please contact ${activeProvider.name} directly: ${activeProvider.whatsapp}`);
+      Alert.alert('WhatsApp unavailable', `Please contact ${activeProvider?.name || 'the provider'} directly.`);
     }
   };
 
@@ -102,8 +100,14 @@ export default function App() {
   };
 
   const handleSubmitInquiry = () => {
-    if (!inquiryName.trim() || !inquiryContact.trim() || !inquiryMessage.trim()) {
-      Alert.alert('Missing information', 'Please enter your name, contact, and message.');
+    const validationError = validateInquiry({
+      name: inquiryName,
+      contact: inquiryContact,
+      message: inquiryMessage
+    });
+
+    if (validationError) {
+      Alert.alert('Missing information', validationError);
       return;
     }
 
