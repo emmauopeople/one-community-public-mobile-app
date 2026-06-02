@@ -1,20 +1,15 @@
 export const CATEGORIES = [
-  'All Categories',
-  'Carpentry',
-  'Plumbing',
-  'Electrical',
-  'Mechanic',
-  'Tutoring',
-  'Tailoring',
-  'Hairdressing',
-  'Cleaning',
-  'Driving',
-  'Software',
-  'Computing',
-  'Agriculture',
-  'Transport',
-  'Building and construction',
-  'Other'
+  { label: 'All', value: '' },
+  { label: 'Carpentry', value: 'carpentry' },
+  { label: 'Plumbing', value: 'plumbing' },
+  { label: 'Cleaning', value: 'cleaning' },
+  { label: 'Tutor', value: 'tutor' },
+  { label: 'Hair/Beauty', value: 'hair-beauty' },
+  { label: 'Mechanic', value: 'mechanic' },
+  { label: 'Catering', value: 'catering' },
+  { label: 'Painting', value: 'painting' },
+  { label: 'Tailor', value: 'tailor' },
+  { label: 'Trucker', value: 'trucker' }
 ];
 
 export const DEFAULT_CITY = 'Douala';
