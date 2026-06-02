@@ -11,6 +11,7 @@ import {
   getProviderFromDataSource,
   getProviderSkillsFromDataSource,
   getSimilarSkillsFromDataSource,
+  getSkillDetailFromDataSource,
   searchSkillsFromDataSource
 } from './src/services/skillDataService';
 import { validateInquiry } from './src/utils/validators';
@@ -55,9 +56,10 @@ export default function App() {
 
   const openSkillDetail = async (skill) => {
     try {
-      setSelectedSkill(skill);
-      const provider = await getProviderFromDataSource(skill.providerId);
-      const similar = await getSimilarSkillsFromDataSource(skill);
+      const fullSkill = await getSkillDetailFromDataSource(skill);
+      setSelectedSkill(fullSkill);
+      const provider = await getProviderFromDataSource(fullSkill.providerId, fullSkill);
+      const similar = await getSimilarSkillsFromDataSource(fullSkill);
       setActiveProvider(provider);
       setProfileProvider(provider);
       setSimilarSkills(similar);
@@ -69,7 +71,7 @@ export default function App() {
 
   const openProviderProfile = async (providerId) => {
     try {
-      const provider = await getProviderFromDataSource(providerId);
+      const provider = await getProviderFromDataSource(providerId, selectedSkill);
       const listings = await getProviderSkillsFromDataSource(providerId);
       setProfileProvider(provider);
       setProviderSkills(listings);
