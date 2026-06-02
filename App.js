@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import {
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -8,6 +7,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { mockSkills, getProviderById } from './src/data/mockSkills';
 import { CATEGORIES, DEFAULT_CITY } from './src/utils/constants';

@@ -14,12 +14,12 @@
     "@react-navigation/native": "latest",
     "@react-navigation/native-stack": "latest",
     "axios": "latest",
-    "expo": "latest",
+    "expo": "^56.0.8",
     "expo-location": "latest",
     "expo-status-bar": "latest",
-    "react": "latest",
+    "react": "19.2.3",
     "react-native": "latest",
-    "react-native-safe-area-context": "latest",
+    "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "latest"
   },
   "devDependencies": {
