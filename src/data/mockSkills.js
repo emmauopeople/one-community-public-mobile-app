@@ -28,6 +28,66 @@ export const mockProviders = [
     statusLabel: 'Available by WhatsApp',
     whatsapp: '237600000003',
     bio: 'Electrical repairs, wiring checks, lights, sockets, and small home electrical installations.'
+  },
+  {
+    id: 'provider-4',
+    name: 'CleanHome Services',
+    city: 'Douala',
+    region: 'Littoral',
+    area: 'Akwa',
+    statusLabel: 'Approved Provider',
+    whatsapp: '237600000004',
+    bio: 'Home and office cleaning support for busy families, small shops, and offices.'
+  },
+  {
+    id: 'provider-5',
+    name: 'Bastos Home Plumbing',
+    city: 'Yaounde',
+    region: 'Centre',
+    area: 'Bastos',
+    statusLabel: 'Profile Reviewed',
+    whatsapp: '237600000005',
+    bio: 'Plumbing repairs for homes, apartments, shops, kitchens, bathrooms, and small buildings.'
+  },
+  {
+    id: 'provider-6',
+    name: 'RoadReady Mechanics',
+    city: 'Buea',
+    region: 'South West',
+    area: 'Molyko',
+    statusLabel: 'Available by WhatsApp',
+    whatsapp: '237600000006',
+    bio: 'Vehicle inspection, basic mechanic support, battery checks, brake checks, and roadside help.'
+  },
+  {
+    id: 'provider-7',
+    name: 'BrightPath Tutors',
+    city: 'Bamenda',
+    region: 'North West',
+    area: 'Mankon',
+    statusLabel: 'Approved Provider',
+    whatsapp: '237600000007',
+    bio: 'Private lessons for mathematics, English, computer basics, and exam preparation.'
+  },
+  {
+    id: 'provider-8',
+    name: 'Royal Touch Hair Studio',
+    city: 'Douala',
+    region: 'Littoral',
+    area: 'Bonamoussadi',
+    statusLabel: 'Profile Reviewed',
+    whatsapp: '237600000008',
+    bio: 'Hairdressing, braiding, simple styling, washing, and event-ready grooming services.'
+  },
+  {
+    id: 'provider-9',
+    name: 'SafeRide Local Drivers',
+    city: 'Yaounde',
+    region: 'Centre',
+    area: 'Melen',
+    statusLabel: 'Approved Provider',
+    whatsapp: '237600000009',
+    bio: 'Local driving support for errands, airport pickup, city movement, and scheduled trips.'
   }
 ];
 
@@ -43,11 +103,25 @@ export const mockSkills = [
     trustLabel: 'Profile Reviewed',
     shortDescription: 'Furniture repair, cabinets, shelves, doors, and custom carpentry for homes and small businesses.',
     description: 'Mboa Fine Carpentry provides practical wood work for homes and small businesses. Services include furniture repair, shelves, cabinets, door repair, small tables, and simple custom designs. The team can discuss the work by WhatsApp before visiting the customer.',
-    imageUrl: 'https://placehold.co/900x600/png?text=Carpentry',
-    images: ['https://placehold.co/900x600/png?text=Carpentry']
+    imageUrl: 'https://placehold.co/900x700/png?text=Custom+Furniture',
+    images: ['https://placehold.co/900x700/png?text=Custom+Furniture']
   },
   {
     id: 'skill-2',
+    providerId: 'provider-1',
+    title: 'Doors, Cabinets, and Shelves',
+    category: 'Carpentry',
+    city: 'Douala',
+    region: 'Littoral',
+    area: 'Bonaberi',
+    trustLabel: 'Profile Reviewed',
+    shortDescription: 'Install and repair shelves, cabinet doors, room doors, small tables, and simple wood fittings.',
+    description: 'This service focuses on everyday carpentry needs such as fixing doors, replacing cabinet parts, installing shelves, and making small wood fittings for homes, shops, and offices.',
+    imageUrl: 'https://placehold.co/900x700/png?text=Cabinets+Shelves',
+    images: ['https://placehold.co/900x700/png?text=Cabinets+Shelves']
+  },
+  {
+    id: 'skill-3',
     providerId: 'provider-2',
     title: 'Tailoring and Clothing Repairs',
     category: 'Tailoring',
@@ -57,11 +131,25 @@ export const mockSkills = [
     trustLabel: 'Approved Provider',
     shortDescription: 'Clothing repairs, measurements, traditional outfits, school uniforms, and simple custom designs.',
     description: 'Grace Tailoring Studio supports customers with clothing repairs, measurements, traditional outfits, uniforms, and everyday clothing adjustments. Customers can contact the provider to explain the type of clothing and preferred date.',
-    imageUrl: 'https://placehold.co/900x600/png?text=Tailoring',
-    images: ['https://placehold.co/900x600/png?text=Tailoring']
+    imageUrl: 'https://placehold.co/900x700/png?text=Tailoring',
+    images: ['https://placehold.co/900x700/png?text=Tailoring']
   },
   {
-    id: 'skill-3',
+    id: 'skill-4',
+    providerId: 'provider-2',
+    title: 'School Uniform Sewing',
+    category: 'Tailoring',
+    city: 'Yaounde',
+    region: 'Centre',
+    area: 'Bastos',
+    trustLabel: 'Approved Provider',
+    shortDescription: 'Uniform measurement, sewing, small adjustments, repairs, and replacement pieces for students.',
+    description: 'This service helps parents prepare school uniforms and repair existing uniforms. Customers can contact the provider with school color, student size, and preferred pickup date.',
+    imageUrl: 'https://placehold.co/900x700/png?text=School+Uniforms',
+    images: ['https://placehold.co/900x700/png?text=School+Uniforms']
+  },
+  {
+    id: 'skill-5',
     providerId: 'provider-3',
     title: 'Home Electrical Repairs',
     category: 'Electrical',
@@ -71,8 +159,134 @@ export const mockSkills = [
     trustLabel: 'Available by WhatsApp',
     shortDescription: 'Basic electrical repair, sockets, light fixtures, wiring checks, and small installations.',
     description: 'QuickFix Electrical helps with small home electrical issues including light fixtures, sockets, wiring checks, and simple installations. Customers should describe the issue clearly before requesting a visit.',
-    imageUrl: 'https://placehold.co/900x600/png?text=Electrical',
-    images: ['https://placehold.co/900x600/png?text=Electrical']
+    imageUrl: 'https://placehold.co/900x700/png?text=Electrical+Repair',
+    images: ['https://placehold.co/900x700/png?text=Electrical+Repair']
+  },
+  {
+    id: 'skill-6',
+    providerId: 'provider-3',
+    title: 'Light and Socket Installation',
+    category: 'Electrical',
+    city: 'Bamenda',
+    region: 'North West',
+    area: 'Commercial Avenue',
+    trustLabel: 'Available by WhatsApp',
+    shortDescription: 'Install or replace lights, switches, sockets, and small indoor electrical fittings.',
+    description: 'This service is for customers who need help installing light fixtures, replacing broken switches, adding sockets, or checking simple indoor electrical issues.',
+    imageUrl: 'https://placehold.co/900x700/png?text=Lights+Sockets',
+    images: ['https://placehold.co/900x700/png?text=Lights+Sockets']
+  },
+  {
+    id: 'skill-7',
+    providerId: 'provider-4',
+    title: 'Home Deep Cleaning',
+    category: 'Cleaning',
+    city: 'Douala',
+    region: 'Littoral',
+    area: 'Akwa',
+    trustLabel: 'Approved Provider',
+    shortDescription: 'Deep cleaning for rooms, kitchens, bathrooms, small apartments, and move-in preparation.',
+    description: 'CleanHome Services helps families and small offices with scheduled cleaning, deep cleaning, and move-in cleaning. Customers can describe the number of rooms and preferred date before booking.',
+    imageUrl: 'https://placehold.co/900x700/png?text=Home+Cleaning',
+    images: ['https://placehold.co/900x700/png?text=Home+Cleaning']
+  },
+  {
+    id: 'skill-8',
+    providerId: 'provider-4',
+    title: 'Office and Shop Cleaning',
+    category: 'Cleaning',
+    city: 'Douala',
+    region: 'Littoral',
+    area: 'Akwa',
+    trustLabel: 'Approved Provider',
+    shortDescription: 'Cleaning support for small offices, salons, shops, waiting rooms, and workspaces.',
+    description: 'This service is designed for small businesses that need reliable cleaning support before opening, after closing, or on selected days each week.',
+    imageUrl: 'https://placehold.co/900x700/png?text=Office+Cleaning',
+    images: ['https://placehold.co/900x700/png?text=Office+Cleaning']
+  },
+  {
+    id: 'skill-9',
+    providerId: 'provider-5',
+    title: 'Bathroom and Kitchen Plumbing',
+    category: 'Plumbing',
+    city: 'Yaounde',
+    region: 'Centre',
+    area: 'Bastos',
+    trustLabel: 'Profile Reviewed',
+    shortDescription: 'Leak checks, sink repair, bathroom repair, pipe connection, and simple water flow issues.',
+    description: 'Bastos Home Plumbing handles common plumbing problems such as leaking sinks, bathroom pipe problems, blocked drains, and kitchen water flow issues. Customers should send photos or a short description before a visit.',
+    imageUrl: 'https://placehold.co/900x700/png?text=Plumbing',
+    images: ['https://placehold.co/900x700/png?text=Plumbing']
+  },
+  {
+    id: 'skill-10',
+    providerId: 'provider-6',
+    title: 'Basic Car Mechanic Check',
+    category: 'Mechanic',
+    city: 'Buea',
+    region: 'South West',
+    area: 'Molyko',
+    trustLabel: 'Available by WhatsApp',
+    shortDescription: 'Basic car checks, battery issues, brakes, oil checks, and minor mechanical troubleshooting.',
+    description: 'RoadReady Mechanics provides basic vehicle support for drivers who need quick inspection, battery check, brake check, oil level review, or minor mechanical troubleshooting before visiting a larger garage.',
+    imageUrl: 'https://placehold.co/900x700/png?text=Mechanic',
+    images: ['https://placehold.co/900x700/png?text=Mechanic']
+  },
+  {
+    id: 'skill-11',
+    providerId: 'provider-7',
+    title: 'Math and Computer Tutor',
+    category: 'Tutoring',
+    city: 'Bamenda',
+    region: 'North West',
+    area: 'Mankon',
+    trustLabel: 'Approved Provider',
+    shortDescription: 'Private tutoring for mathematics, computer basics, assignments, and exam preparation.',
+    description: 'BrightPath Tutors supports learners with math lessons, computer basics, homework support, and exam preparation. Parents can contact the tutor to discuss level, schedule, and learning goals.',
+    imageUrl: 'https://placehold.co/900x700/png?text=Tutoring',
+    images: ['https://placehold.co/900x700/png?text=Tutoring']
+  },
+  {
+    id: 'skill-12',
+    providerId: 'provider-8',
+    title: 'Braiding and Hair Styling',
+    category: 'Hairdressing',
+    city: 'Douala',
+    region: 'Littoral',
+    area: 'Bonamoussadi',
+    trustLabel: 'Profile Reviewed',
+    shortDescription: 'Braiding, washing, simple styling, event grooming, and home appointment discussion.',
+    description: 'Royal Touch Hair Studio provides hairdressing services including braiding, washing, simple styling, and event-ready grooming. Customers can send preferred style and availability by WhatsApp.',
+    imageUrl: 'https://placehold.co/900x700/png?text=Hairdressing',
+    images: ['https://placehold.co/900x700/png?text=Hairdressing']
+  },
+  {
+    id: 'skill-13',
+    providerId: 'provider-9',
+    title: 'Local Driver for Errands',
+    category: 'Driving',
+    city: 'Yaounde',
+    region: 'Centre',
+    area: 'Melen',
+    trustLabel: 'Approved Provider',
+    shortDescription: 'Local driving support for errands, pickup, drop-off, market trips, and scheduled movement.',
+    description: 'SafeRide Local Drivers helps customers who need movement around the city, errand support, airport pickup, market trips, or scheduled local travel. Customers can discuss route and time before confirming.',
+    imageUrl: 'https://placehold.co/900x700/png?text=Driving',
+    images: ['https://placehold.co/900x700/png?text=Driving']
+  },
+  {
+    id: 'skill-14',
+    providerId: 'provider-5',
+    title: 'Other Home Repair Support',
+    category: 'Other',
+    city: 'Yaounde',
+    region: 'Centre',
+    area: 'Bastos',
+    trustLabel: 'Profile Reviewed',
+    shortDescription: 'Small home repair support when the work does not fit plumbing, electrical, or carpentry only.',
+    description: 'This listing helps customers request small home repair support that may require inspection before assigning the right worker. It is useful for unclear household problems or mixed repair needs.',
+    imageUrl: 'https://placehold.co/900x700/png?text=Home+Repair',
+    images: ['https://placehold.co/900x700/png?text=Home+Repair']
   }
 ];
 
