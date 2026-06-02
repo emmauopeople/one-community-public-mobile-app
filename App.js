@@ -6,6 +6,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import SkillDetailScreen from './src/screens/SkillDetailScreen';
 import ProviderProfileScreen from './src/screens/ProviderProfileScreen';
 import InquiryModal from './src/components/InquiryModal';
+import { sendSkillInquiry } from './src/api/inquiryApi';
 import { openWhatsAppForSkill } from './src/services/whatsappService';
 import {
   getProviderFromDataSource,
@@ -18,7 +19,7 @@ import { validateInquiry } from './src/utils/validators';
 
 export default function App() {
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('All Categories');
+  const [category, setCategory] = useState('');
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [screen, setScreen] = useState('home');
   const [skills, setSkills] = useState([]);
@@ -31,6 +32,7 @@ export default function App() {
   const [inquiryName, setInquiryName] = useState('');
   const [inquiryContact, setInquiryContact] = useState('');
   const [inquiryMessage, setInquiryMessage] = useState('');
+  const [isSubmittingInquiry, setIsSubmittingInquiry] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -118,7 +120,7 @@ export default function App() {
     setInquiryOpen(true);
   };
 
-  const handleSubmitInquiry = () => {
+  const handleSubmitInquiry = async () => {
     const validationError = validateInquiry({
       name: inquiryName,
       contact: inquiryContact,
@@ -130,8 +132,29 @@ export default function App() {
       return;
     }
 
-    Alert.alert('Inquiry ready', 'The inquiry was captured in this pilot version. The next version will send it to the backend.');
-    setInquiryOpen(false);
+    if (!selectedSkill?.id) {
+      Alert.alert('Missing service', 'Please select a service before sending an inquiry.');
+      return;
+    }
+
+    try {
+      setIsSubmittingInquiry(true);
+      await sendSkillInquiry({
+        skillId: selectedSkill.id,
+        contact: inquiryContact.trim(),
+        message: `${inquiryMessage.trim()}\n\nSender name: ${inquiryName.trim()}`
+      });
+
+      Alert.alert('Inquiry sent', 'Your inquiry was sent successfully. The provider can reply to your email.');
+      setInquiryOpen(false);
+      setInquiryName('');
+      setInquiryContact('');
+      setInquiryMessage('');
+    } catch (error) {
+      Alert.alert('Inquiry failed', error?.response?.data?.error || error?.message || 'Failed to send inquiry. Please try again.');
+    } finally {
+      setIsSubmittingInquiry(false);
+    }
   };
 
   return (
@@ -181,6 +204,7 @@ export default function App() {
         name={inquiryName}
         contact={inquiryContact}
         message={inquiryMessage}
+        isSubmitting={isSubmittingInquiry}
         onChangeName={setInquiryName}
         onChangeContact={setInquiryContact}
         onChangeMessage={setInquiryMessage}
