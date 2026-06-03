@@ -6,10 +6,12 @@ import { CATEGORIES, DEFAULT_CITY } from '../utils/constants';
 
 export default function HomeScreen({
   query,
+  city,
   category,
   categoryOpen,
   skills,
   onChangeQuery,
+  onChangeCity,
   onOpenCategory,
   onCloseCategory,
   onSelectCategory,
@@ -31,7 +33,15 @@ export default function HomeScreen({
       <TextInput
         value={query}
         onChangeText={onChangeQuery}
-        placeholder="Search service, city, provider, or category"
+        placeholder="What service do you need?"
+        style={styles.searchInput}
+      />
+
+      <TextInput
+        value={city}
+        onChangeText={onChangeCity}
+        placeholder="City, for example Douala, Buea, Bamenda"
+        autoCapitalize="words"
         style={styles.searchInput}
       />
 
@@ -52,7 +62,7 @@ export default function HomeScreen({
       {skills.length === 0 ? (
         <View style={styles.emptyBox}>
           <Text style={styles.emptyTitle}>No services found</Text>
-          <Text style={styles.emptyText}>Try a simple word like carpenter, tailor, electrical, Douala, or Yaounde.</Text>
+          <Text style={styles.emptyText}>Try a simple word like carpenter, tailor, electrical, Douala, Buea, or Bamenda.</Text>
         </View>
       ) : (
         <View style={styles.grid}>
