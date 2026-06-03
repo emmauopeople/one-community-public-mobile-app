@@ -1,11 +1,12 @@
 import { apiClient } from './apiClient';
 
-export const searchPublicSkills = async ({ query = '', category = '', city = '', lat, lng, radiusKm } = {}) => {
+export const searchPublicSkills = async ({ query = '', category = '', city = '', area = '', lat, lng, radiusKm } = {}) => {
   const response = await apiClient.get('/skills/search', {
     params: {
       q: query || undefined,
       category: category && category !== 'All Categories' ? category : undefined,
       city: city || undefined,
+      area: area || undefined,
       lat,
       lng,
       radius_km: radiusKm
