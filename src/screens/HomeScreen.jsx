@@ -1,8 +1,10 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import CategoryDropdown from '../components/CategoryDropdown';
 import SkillCard from '../components/SkillCard';
 import { CATEGORIES, DEFAULT_CITY } from '../utils/constants';
+
+const LOGO_URI = 'https://raw.githubusercontent.com/emmauopeople/1community_app/main/frontend/src/assets/images/appLogo.png';
 
 export default function HomeScreen({
   query,
@@ -20,39 +22,48 @@ export default function HomeScreen({
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.hero}>
-        <Text style={styles.brand}>One Community</Text>
-        <Text style={styles.heroTitle}>Find trusted local services near you.</Text>
-        <Text style={styles.heroText}>
-          Search for carpenters, plumbers, mechanics, tutors, tailors, and other local providers in Cameroon.
-        </Text>
+        <View style={styles.brandRow}>
+          <Image source={{ uri: LOGO_URI }} style={styles.logo} resizeMode="contain" />
+          <View>
+            <Text style={styles.brand}>One Community</Text>
+            <Text style={styles.brandSubtext}>Local services in Cameroon</Text>
+          </View>
+        </View>
+
+        <Text style={styles.heroTitle}>Find trusted local services.</Text>
+        <Text style={styles.heroText}>Search skilled workers near you and contact them by WhatsApp or email.</Text>
+
         <View style={styles.locationBadge}>
           <Text style={styles.locationText}>Pilot city: {DEFAULT_CITY}</Text>
         </View>
       </View>
 
-      <TextInput
-        value={query}
-        onChangeText={onChangeQuery}
-        placeholder="What service do you need?"
-        style={styles.searchInput}
-      />
+      <View style={styles.searchPanel}>
+        <Text style={styles.panelTitle}>Search services</Text>
+        <TextInput
+          value={query}
+          onChangeText={onChangeQuery}
+          placeholder="What service do you need?"
+          style={styles.searchInput}
+        />
 
-      <TextInput
-        value={city}
-        onChangeText={onChangeCity}
-        placeholder="City, for example Douala, Buea, Bamenda"
-        autoCapitalize="words"
-        style={styles.searchInput}
-      />
+        <TextInput
+          value={city}
+          onChangeText={onChangeCity}
+          placeholder="City, for example Douala, Buea, Bamenda"
+          autoCapitalize="words"
+          style={styles.searchInput}
+        />
 
-      <CategoryDropdown
-        categories={CATEGORIES}
-        selectedCategory={category}
-        visible={categoryOpen}
-        onOpen={onOpenCategory}
-        onClose={onCloseCategory}
-        onSelect={onSelectCategory}
-      />
+        <CategoryDropdown
+          categories={CATEGORIES}
+          selectedCategory={category}
+          visible={categoryOpen}
+          onOpen={onOpenCategory}
+          onClose={onCloseCategory}
+          onSelect={onSelectCategory}
+        />
+      </View>
 
       <View style={styles.sectionHeaderRow}>
         <Text style={styles.sectionTitle}>Available services</Text>
@@ -82,20 +93,39 @@ const styles = StyleSheet.create({
   },
   hero: {
     backgroundColor: '#dcfce7',
-    borderRadius: 24,
+    borderRadius: 26,
     padding: 20,
-    marginBottom: 14
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: '#bbf7d0'
+  },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16
+  },
+  logo: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    marginRight: 12,
+    backgroundColor: '#ffffff'
   },
   brand: {
     color: '#166534',
-    fontSize: 16,
-    fontWeight: '800',
-    marginBottom: 10
+    fontSize: 17,
+    fontWeight: '900'
+  },
+  brandSubtext: {
+    color: '#4b5563',
+    fontSize: 12,
+    fontWeight: '700',
+    marginTop: 2
   },
   heroTitle: {
     color: '#111827',
-    fontSize: 28,
-    lineHeight: 34,
+    fontSize: 29,
+    lineHeight: 35,
     fontWeight: '900',
     marginBottom: 8
   },
@@ -116,15 +146,29 @@ const styles = StyleSheet.create({
     color: '#166534',
     fontWeight: '800'
   },
-  searchInput: {
+  searchPanel: {
     backgroundColor: '#ffffff',
+    borderRadius: 22,
+    padding: 14,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#e5e7eb'
+  },
+  panelTitle: {
+    color: '#111827',
+    fontSize: 15,
+    fontWeight: '900',
+    marginBottom: 10
+  },
+  searchInput: {
+    backgroundColor: '#f8fafc',
     borderColor: '#e5e7eb',
     borderWidth: 1,
-    borderRadius: 18,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    marginBottom: 12
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 13,
+    fontSize: 15,
+    marginBottom: 10
   },
   sectionHeaderRow: {
     flexDirection: 'row',
