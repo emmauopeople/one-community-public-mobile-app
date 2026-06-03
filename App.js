@@ -19,6 +19,7 @@ import { validateInquiry } from './src/utils/validators';
 
 export default function App() {
   const [query, setQuery] = useState('');
+  const [city, setCity] = useState('');
   const [category, setCategory] = useState('');
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [screen, setScreen] = useState('home');
@@ -39,7 +40,7 @@ export default function App() {
 
     const loadSkills = async () => {
       try {
-        const results = await searchSkillsFromDataSource({ query, category });
+        const results = await searchSkillsFromDataSource({ query, category, city });
         if (mounted) setSkills(results);
       } catch (error) {
         if (mounted) {
@@ -54,7 +55,7 @@ export default function App() {
     return () => {
       mounted = false;
     };
-  }, [query, category]);
+  }, [query, category, city]);
 
   const openSkillDetail = async (skill) => {
     try {
@@ -164,10 +165,12 @@ export default function App() {
       {screen === 'home' && (
         <HomeScreen
           query={query}
+          city={city}
           category={category}
           categoryOpen={categoryOpen}
           skills={skills}
           onChangeQuery={setQuery}
+          onChangeCity={setCity}
           onOpenCategory={() => setCategoryOpen(true)}
           onCloseCategory={() => setCategoryOpen(false)}
           onSelectCategory={handleCategorySelect}
