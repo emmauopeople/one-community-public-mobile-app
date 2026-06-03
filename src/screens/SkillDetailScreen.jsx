@@ -1,7 +1,10 @@
-import React, { useMemo, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useMemo, useRef, useState } from 'react';
+import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import GradientButton from '../components/GradientButton';
 import SkillCard from '../components/SkillCard';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const IMAGE_WIDTH = SCREEN_WIDTH - 28;
 
 export default function SkillDetailScreen({
   skill,
@@ -15,6 +18,7 @@ export default function SkillDetailScreen({
   onOpenSkill
 }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const galleryRef = useRef(null);
 
   const images = useMemo(() => {
     const list = Array.isArray(skill?.images) ? skill.images.filter(Boolean) : [];
@@ -24,14 +28,23 @@ export default function SkillDetailScreen({
 
   if (!skill || !provider) return null;
 
-  const activeImage = images[Math.min(activeImageIndex, images.length - 1)];
+  const goToImage = (index) => {
+    const safeIndex = Math.max(0, Math.min(index, images.length - 1));
+    setActiveImageIndex(safeIndex);
+    galleryRef.current?.scrollTo({ x: safeIndex * IMAGE_WIDTH, animated: true });
+  };
 
   const showPreviousImage = () => {
-    setActiveImageIndex((current) => (current === 0 ? images.length - 1 : current - 1));
+    goToImage(activeImageIndex === 0 ? images.length - 1 : activeImageIndex - 1);
   };
 
   const showNextImage = () => {
-    setActiveImageIndex((current) => (current === images.length - 1 ? 0 : current + 1));
+    goToImage(activeImageIndex === images.length - 1 ? 0 : activeImageIndex + 1);
+  };
+
+  const handleGalleryScrollEnd = (event) => {
+    const index = Math.round(event.nativeEvent.contentOffset.x / IMAGE_WIDTH);
+    setActiveImageIndex(index);
   };
 
   return (
@@ -39,7 +52,18 @@ export default function SkillDetailScreen({
       <TopBar title="Service Details" onBack={onBack} onClose={onClose} />
 
       <View style={styles.imageWrap}>
-        <Image source={{ uri: activeImage }} style={styles.detailImage} />
+        <ScrollView
+          ref={galleryRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={handleGalleryScrollEnd}
+          style={styles.galleryScroll}
+        >
+          {images.map((uri, index) => (
+            <Image key={`${uri}-${index}`} source={{ uri }} style={styles.detailImage} />
+          ))}
+        </ScrollView>
         {images.length > 1 && (
           <>
             <TouchableOpacity style={[styles.imageNavButton, styles.imageNavLeft]} onPress={showPreviousImage}>
@@ -58,7 +82,7 @@ export default function SkillDetailScreen({
       {images.length > 1 && (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.thumbnailRow}>
           {images.map((uri, index) => (
-            <TouchableOpacity key={`${uri}-${index}`} onPress={() => setActiveImageIndex(index)}>
+            <TouchableOpacity key={`${uri}-thumb-${index}`} onPress={() => goToImage(index)}>
               <Image source={{ uri }} style={[styles.thumbnailImage, activeImageIndex === index && styles.thumbnailImageActive]} />
             </TouchableOpacity>
           ))}
@@ -74,7 +98,7 @@ export default function SkillDetailScreen({
         <TouchableOpacity style={styles.providerBox} onPress={() => onOpenProvider(provider.id)}>
           <Text style={styles.providerLabel}>Provider Profile</Text>
           <Text style={styles.providerName}>{provider.name}</Text>
-          <Text style={styles.cardText}>{provider.bio}</Text>
+          {!!provider.bio && <Text style={styles.cardText}>{provider.bio}</Text>}
           <Text style={styles.viewProfileText}>View all provider listings</Text>
         </TouchableOpacity>
 
@@ -142,12 +166,19 @@ const styles = StyleSheet.create({
   },
   imageWrap: {
     position: 'relative',
-    marginBottom: 10
+    marginBottom: 10,
+    borderRadius: 24,
+    overflow: 'hidden'
   },
-  detailImage: {
-    width: '100%',
+  galleryScroll: {
+    width: IMAGE_WIDTH,
     height: 260,
     borderRadius: 24,
+    backgroundColor: '#dbeafe'
+  },
+  detailImage: {
+    width: IMAGE_WIDTH,
+    height: 260,
     backgroundColor: '#dbeafe'
   },
   imageNavButton: {
