@@ -12,7 +12,7 @@ const normalizeProvider = (provider = {}) => ({
   statusLabel: provider.status === 'active' ? 'Approved Provider' : provider.statusLabel || 'Profile Reviewed',
   whatsapp: String(provider.phone || provider.provider_phone || provider.whatsapp || '').replace(/[^0-9]/g, ''),
   email: provider.email || provider.provider_email || '',
-  bio: provider.bio || 'This provider has active service listings on One Community.'
+  bio: provider.bio || ''
 });
 
 const normalizeSkill = (skill = {}) => {
