@@ -46,12 +46,16 @@ const normalizeListResponse = (response) => {
   return [];
 };
 
-const searchMockSkills = ({ query = '', category = '' } = {}) => {
+const searchMockSkills = ({ query = '', category = '', city = '', area = '' } = {}) => {
   const cleanQuery = query.trim().toLowerCase();
+  const cleanCity = city.trim().toLowerCase();
+  const cleanArea = area.trim().toLowerCase();
 
   return mockSkills.filter((skill) => {
     const provider = getProviderById(skill.providerId);
     const matchesCategory = category === 'All Categories' || !category || skill.category === category;
+    const matchesCity = !cleanCity || String(skill.city || '').toLowerCase().includes(cleanCity);
+    const matchesArea = !cleanArea || String(skill.area || '').toLowerCase().includes(cleanArea);
     const searchableText = [
       skill.title,
       skill.category,
@@ -66,16 +70,16 @@ const searchMockSkills = ({ query = '', category = '' } = {}) => {
       .join(' ')
       .toLowerCase();
 
-    return matchesCategory && (cleanQuery.length === 0 || searchableText.includes(cleanQuery));
+    return matchesCategory && matchesCity && matchesArea && (cleanQuery.length === 0 || searchableText.includes(cleanQuery));
   });
 };
 
-export const searchSkillsFromDataSource = async ({ query = '', category = '', city = '' } = {}) => {
+export const searchSkillsFromDataSource = async ({ query = '', category = '', city = '', area = '' } = {}) => {
   if (USE_MOCK_DATA) {
-    return searchMockSkills({ query, category, city });
+    return searchMockSkills({ query, category, city, area });
   }
 
-  const response = await searchPublicSkills({ query, category, city });
+  const response = await searchPublicSkills({ query, category, city, area });
   return normalizeListResponse(response);
 };
 
