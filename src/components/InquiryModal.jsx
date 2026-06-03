@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import GradientButton from './GradientButton';
 
 export default function InquiryModal({
   visible,
@@ -40,13 +41,7 @@ export default function InquiryModal({
             editable={!isSubmitting}
           />
 
-          <TouchableOpacity
-            style={[styles.primaryButton, isSubmitting && styles.primaryButtonDisabled]}
-            onPress={onSubmit}
-            disabled={isSubmitting}
-          >
-            <Text style={styles.primaryButtonText}>{isSubmitting ? 'Sending...' : 'Submit inquiry'}</Text>
-          </TouchableOpacity>
+          <GradientButton title={isSubmitting ? 'Sending...' : 'Submit inquiry'} onPress={onSubmit} disabled={isSubmitting} />
           <TouchableOpacity style={styles.modalCancelButton} onPress={onClose} disabled={isSubmitting}>
             <Text style={styles.modalCancelText}>Cancel</Text>
           </TouchableOpacity>
@@ -94,21 +89,6 @@ const styles = StyleSheet.create({
   messageInput: {
     minHeight: 96,
     textAlignVertical: 'top'
-  },
-  primaryButton: {
-    backgroundColor: '#15803d',
-    borderRadius: 16,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginBottom: 10
-  },
-  primaryButtonDisabled: {
-    opacity: 0.65
-  },
-  primaryButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '900'
   },
   modalCancelButton: {
     alignItems: 'center',
