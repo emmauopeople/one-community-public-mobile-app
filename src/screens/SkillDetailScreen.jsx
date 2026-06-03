@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import GradientButton from '../components/GradientButton';
 import SkillCard from '../components/SkillCard';
 
 export default function SkillDetailScreen({
@@ -77,9 +78,7 @@ export default function SkillDetailScreen({
           <Text style={styles.viewProfileText}>View all provider listings</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.primaryButton} onPress={onWhatsApp}>
-          <Text style={styles.primaryButtonText}>Contact by WhatsApp</Text>
-        </TouchableOpacity>
+        <GradientButton title="Contact by WhatsApp" onPress={onWhatsApp} />
         <TouchableOpacity style={styles.secondaryButton} onPress={onInquiry}>
           <Text style={styles.secondaryButtonText}>Send email inquiry</Text>
         </TouchableOpacity>
@@ -133,7 +132,7 @@ const styles = StyleSheet.create({
     borderColor: '#e5e7eb'
   },
   topButtonText: {
-    color: '#166534',
+    color: '#1d4ed8',
     fontWeight: '900'
   },
   topTitle: {
@@ -149,7 +148,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 260,
     borderRadius: 24,
-    backgroundColor: '#dcfce7'
+    backgroundColor: '#dbeafe'
   },
   imageNavButton: {
     position: 'absolute',
@@ -199,7 +198,7 @@ const styles = StyleSheet.create({
     borderColor: '#e5e7eb'
   },
   thumbnailImageActive: {
-    borderColor: '#15803d'
+    borderColor: '#2563eb'
   },
   detailCard: {
     backgroundColor: '#ffffff',
@@ -222,8 +221,8 @@ const styles = StyleSheet.create({
   },
   trustBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#dcfce7',
-    color: '#166534',
+    backgroundColor: '#dbeafe',
+    color: '#1d4ed8',
     borderRadius: 99,
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -259,7 +258,7 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   viewProfileText: {
-    color: '#15803d',
+    color: '#2563eb',
     fontWeight: '900',
     marginTop: 10
   },
@@ -268,26 +267,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20
   },
-  primaryButton: {
-    backgroundColor: '#15803d',
-    borderRadius: 16,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginBottom: 10
-  },
-  primaryButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '900'
-  },
   secondaryButton: {
-    backgroundColor: '#dcfce7',
+    backgroundColor: '#ecfdf5',
     borderRadius: 16,
     paddingVertical: 15,
     alignItems: 'center'
   },
   secondaryButtonText: {
-    color: '#166534',
+    color: '#047857',
     fontSize: 16,
     fontWeight: '900'
   },
