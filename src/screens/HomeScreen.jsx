@@ -1,5 +1,5 @@
-import React from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CategoryDropdown from '../components/CategoryDropdown';
 import SkillCard from '../components/SkillCard';
 import { CATEGORIES, DEFAULT_CITY } from '../utils/constants';
@@ -19,132 +19,190 @@ export default function HomeScreen({
   onSelectCategory,
   onOpenSkill
 }) {
+  const [showInfo, setShowInfo] = useState(false);
+
+  const dismissInfo = () => {
+    if (showInfo) setShowInfo(false);
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.hero}>
-        <View style={styles.brandRow}>
-          <Image source={{ uri: LOGO_URI }} style={styles.logo} resizeMode="contain" />
-          <View>
-            <Text style={styles.brand}>One Community</Text>
-            <Text style={styles.brandSubtext}>Local services in Cameroon</Text>
+    <Pressable style={styles.screen} onPress={dismissInfo}>
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <View style={styles.hero}>
+          <View style={styles.brandRow}>
+            <Image source={{ uri: LOGO_URI }} style={styles.logo} resizeMode="contain" />
+            <View style={styles.brandTextWrap}>
+              <Text style={styles.brand}>One Community</Text>
+              <Text style={styles.brandSubtext}>Local services in Cameroon</Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.infoButton}
+              onPress={(event) => {
+                event.stopPropagation();
+                setShowInfo((current) => !current);
+              }}
+            >
+              <Text style={styles.infoButtonText}>i</Text>
+            </TouchableOpacity>
           </View>
+
+          <Text style={styles.heroTitle}>Trusted Services</Text>
+          <View style={styles.locationBadge}>
+            <Text style={styles.locationText}>Pilot city: {DEFAULT_CITY}</Text>
+          </View>
+
+          {showInfo && (
+            <View style={styles.infoBubble}>
+              <Text style={styles.infoBubbleText}>
+                Search skilled workers near you, view their service details, and contact them by WhatsApp or email.
+              </Text>
+            </View>
+          )}
         </View>
 
-        <Text style={styles.heroTitle}>Find trusted local services.</Text>
-        <Text style={styles.heroText}>Search skilled workers near you and contact them by WhatsApp or email.</Text>
+        <View style={styles.searchPanel}>
+          <Text style={styles.panelTitle}>Search services</Text>
+          <TextInput
+            value={query}
+            onChangeText={onChangeQuery}
+            placeholder="What service do you need?"
+            style={styles.searchInput}
+          />
 
-        <View style={styles.locationBadge}>
-          <Text style={styles.locationText}>Pilot city: {DEFAULT_CITY}</Text>
+          <TextInput
+            value={city}
+            onChangeText={onChangeCity}
+            placeholder="City, for example Douala, Buea, Bamenda"
+            autoCapitalize="words"
+            style={styles.searchInput}
+          />
+
+          <CategoryDropdown
+            categories={CATEGORIES}
+            selectedCategory={category}
+            visible={categoryOpen}
+            onOpen={onOpenCategory}
+            onClose={onCloseCategory}
+            onSelect={onSelectCategory}
+          />
         </View>
-      </View>
 
-      <View style={styles.searchPanel}>
-        <Text style={styles.panelTitle}>Search services</Text>
-        <TextInput
-          value={query}
-          onChangeText={onChangeQuery}
-          placeholder="What service do you need?"
-          style={styles.searchInput}
-        />
-
-        <TextInput
-          value={city}
-          onChangeText={onChangeCity}
-          placeholder="City, for example Douala, Buea, Bamenda"
-          autoCapitalize="words"
-          style={styles.searchInput}
-        />
-
-        <CategoryDropdown
-          categories={CATEGORIES}
-          selectedCategory={category}
-          visible={categoryOpen}
-          onOpen={onOpenCategory}
-          onClose={onCloseCategory}
-          onSelect={onSelectCategory}
-        />
-      </View>
-
-      <View style={styles.sectionHeaderRow}>
-        <Text style={styles.sectionTitle}>Available services</Text>
-        <Text style={styles.resultCount}>{skills.length} found</Text>
-      </View>
-
-      {skills.length === 0 ? (
-        <View style={styles.emptyBox}>
-          <Text style={styles.emptyTitle}>No services found</Text>
-          <Text style={styles.emptyText}>Try a simple word like carpenter, tailor, electrical, Douala, Buea, or Bamenda.</Text>
+        <View style={styles.sectionHeaderRow}>
+          <Text style={styles.sectionTitle}>Available services</Text>
+          <Text style={styles.resultCount}>{skills.length} found</Text>
         </View>
-      ) : (
-        <View style={styles.grid}>
-          {skills.map((skill) => (
-            <SkillCard key={skill.id} skill={skill} onPress={onOpenSkill} />
-          ))}
-        </View>
-      )}
-    </ScrollView>
+
+        {skills.length === 0 ? (
+          <View style={styles.emptyBox}>
+            <Text style={styles.emptyTitle}>No services found</Text>
+            <Text style={styles.emptyText}>Try a simple word like carpenter, tailor, electrical, Douala, Buea, or Bamenda.</Text>
+          </View>
+        ) : (
+          <View style={styles.grid}>
+            {skills.map((skill) => (
+              <SkillCard key={skill.id} skill={skill} onPress={onOpenSkill} />
+            ))}
+          </View>
+        )}
+      </ScrollView>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1
+  },
   container: {
     padding: 14,
     paddingBottom: 40
   },
   hero: {
     backgroundColor: '#dcfce7',
-    borderRadius: 26,
-    padding: 20,
-    marginBottom: 14,
+    borderRadius: 22,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#bbf7d0'
+    borderColor: '#bbf7d0',
+    position: 'relative'
   },
   brandRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16
+    marginBottom: 10
   },
   logo: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    marginRight: 12,
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    marginRight: 10,
     backgroundColor: '#ffffff'
+  },
+  brandTextWrap: {
+    flex: 1
   },
   brand: {
     color: '#166534',
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: '900'
   },
   brandSubtext: {
     color: '#4b5563',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
-    marginTop: 2
+    marginTop: 1
+  },
+  infoButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#bbf7d0',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  infoButtonText: {
+    color: '#166534',
+    fontSize: 15,
+    fontWeight: '900'
   },
   heroTitle: {
     color: '#111827',
-    fontSize: 29,
-    lineHeight: 35,
+    fontSize: 25,
+    lineHeight: 30,
     fontWeight: '900',
     marginBottom: 8
-  },
-  heroText: {
-    color: '#374151',
-    fontSize: 15,
-    lineHeight: 22
   },
   locationBadge: {
     backgroundColor: '#ffffff',
     borderRadius: 99,
     alignSelf: 'flex-start',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    marginTop: 14
+    paddingHorizontal: 12,
+    paddingVertical: 6
   },
   locationText: {
     color: '#166534',
-    fontWeight: '800'
+    fontWeight: '800',
+    fontSize: 12
+  },
+  infoBubble: {
+    position: 'absolute',
+    top: 48,
+    right: 14,
+    left: 52,
+    backgroundColor: '#111827',
+    borderRadius: 14,
+    padding: 12,
+    zIndex: 10
+  },
+  infoBubbleText: {
+    color: '#ffffff',
+    fontSize: 13,
+    lineHeight: 19,
+    fontWeight: '600'
   },
   searchPanel: {
     backgroundColor: '#ffffff',
