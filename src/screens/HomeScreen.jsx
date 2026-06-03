@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CategoryDropdown from '../components/CategoryDropdown';
 import SkillCard from '../components/SkillCard';
-import { CATEGORIES, DEFAULT_CITY } from '../utils/constants';
+import { CATEGORIES } from '../utils/constants';
 
 const LOGO_URI = 'https://raw.githubusercontent.com/emmauopeople/1community_app/main/frontend/src/assets/images/appLogo.png';
 
@@ -33,7 +33,7 @@ export default function HomeScreen({
             <Image source={{ uri: LOGO_URI }} style={styles.logo} resizeMode="contain" />
             <View style={styles.brandTextWrap}>
               <Text style={styles.brand}>One Community</Text>
-              <Text style={styles.brandSubtext}>Local services in Cameroon</Text>
+              <Text style={styles.brandSubtext}>Blue-green local service network</Text>
             </View>
 
             <TouchableOpacity
@@ -48,9 +48,6 @@ export default function HomeScreen({
           </View>
 
           <Text style={styles.heroTitle}>Trusted Services</Text>
-          <View style={styles.locationBadge}>
-            <Text style={styles.locationText}>Pilot city: {DEFAULT_CITY}</Text>
-          </View>
 
           {showInfo && (
             <View style={styles.infoBubble}>
@@ -119,13 +116,13 @@ const styles = StyleSheet.create({
     paddingBottom: 40
   },
   hero: {
-    backgroundColor: '#dcfce7',
+    backgroundColor: '#eff6ff',
     borderRadius: 22,
     paddingHorizontal: 16,
     paddingVertical: 14,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#bbf7d0',
+    borderColor: '#bfdbfe',
     position: 'relative'
   },
   brandRow: {
@@ -144,12 +141,12 @@ const styles = StyleSheet.create({
     flex: 1
   },
   brand: {
-    color: '#166534',
+    color: '#1d4ed8',
     fontSize: 16,
     fontWeight: '900'
   },
   brandSubtext: {
-    color: '#4b5563',
+    color: '#047857',
     fontSize: 11,
     fontWeight: '700',
     marginTop: 1
@@ -160,12 +157,12 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: '#ffffff',
     borderWidth: 1,
-    borderColor: '#bbf7d0',
+    borderColor: '#93c5fd',
     alignItems: 'center',
     justifyContent: 'center'
   },
   infoButtonText: {
-    color: '#166534',
+    color: '#1d4ed8',
     fontSize: 15,
     fontWeight: '900'
   },
@@ -173,20 +170,7 @@ const styles = StyleSheet.create({
     color: '#111827',
     fontSize: 25,
     lineHeight: 30,
-    fontWeight: '900',
-    marginBottom: 8
-  },
-  locationBadge: {
-    backgroundColor: '#ffffff',
-    borderRadius: 99,
-    alignSelf: 'flex-start',
-    paddingHorizontal: 12,
-    paddingVertical: 6
-  },
-  locationText: {
-    color: '#166534',
-    fontWeight: '800',
-    fontSize: 12
+    fontWeight: '900'
   },
   infoBubble: {
     position: 'absolute',
