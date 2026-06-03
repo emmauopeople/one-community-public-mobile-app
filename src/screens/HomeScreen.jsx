@@ -33,7 +33,7 @@ export default function HomeScreen({
             <Image source={{ uri: LOGO_URI }} style={styles.logo} resizeMode="contain" />
             <View style={styles.brandTextWrap}>
               <Text style={styles.brand}>One Community</Text>
-              <Text style={styles.brandSubtext}>Blue-green local service network</Text>
+              <Text style={styles.brandSubtext}>Local service network</Text>
             </View>
 
             <TouchableOpacity
