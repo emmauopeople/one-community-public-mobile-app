@@ -9,11 +9,13 @@ const LOGO_URI = 'https://raw.githubusercontent.com/emmauopeople/1community_app/
 export default function HomeScreen({
   query,
   city,
+  area,
   category,
   categoryOpen,
   skills,
   onChangeQuery,
   onChangeCity,
+  onChangeArea,
   onOpenCategory,
   onCloseCategory,
   onSelectCategory,
@@ -52,7 +54,7 @@ export default function HomeScreen({
           {showInfo && (
             <View style={styles.infoBubble}>
               <Text style={styles.infoBubbleText}>
-                Search skilled workers near you, view their service details, and contact them by WhatsApp or email.
+                Search skilled workers near you by service, city, or neighborhood area, then contact them by WhatsApp or email.
               </Text>
             </View>
           )}
@@ -70,7 +72,15 @@ export default function HomeScreen({
           <TextInput
             value={city}
             onChangeText={onChangeCity}
-            placeholder="City, for example Douala, Buea, Bamenda"
+            placeholder="City, for example Yaounde or Douala"
+            autoCapitalize="words"
+            style={styles.searchInput}
+          />
+
+          <TextInput
+            value={area}
+            onChangeText={onChangeArea}
+            placeholder="Area, for example Emana, Mvog-Mbi, Bonaberi"
             autoCapitalize="words"
             style={styles.searchInput}
           />
@@ -93,7 +103,7 @@ export default function HomeScreen({
         {skills.length === 0 ? (
           <View style={styles.emptyBox}>
             <Text style={styles.emptyTitle}>No services found</Text>
-            <Text style={styles.emptyText}>Try a simple word like carpenter, tailor, electrical, Douala, Buea, or Bamenda.</Text>
+            <Text style={styles.emptyText}>Try a service, city, or area like plumber, Yaounde, Emana, Douala, or Bonaberi.</Text>
           </View>
         ) : (
           <View style={styles.grid}>
