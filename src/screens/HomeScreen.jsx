@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CategoryDropdown from '../components/CategoryDropdown';
+import GradientButton from '../components/GradientButton';
 import SkillCard from '../components/SkillCard';
 import { CATEGORIES } from '../utils/constants';
 
@@ -8,14 +9,12 @@ const LOGO_URI = 'https://raw.githubusercontent.com/emmauopeople/1community_app/
 
 export default function HomeScreen({
   query,
-  city,
-  area,
   category,
   categoryOpen,
   skills,
+  isSearching = false,
   onChangeQuery,
-  onChangeCity,
-  onChangeArea,
+  onSubmitSearch,
   onOpenCategory,
   onCloseCategory,
   onSelectCategory,
@@ -54,35 +53,21 @@ export default function HomeScreen({
           {showInfo && (
             <View style={styles.infoBubble}>
               <Text style={styles.infoBubbleText}>
-                Search skilled workers near you by service, city, or neighborhood area, then contact them by WhatsApp or email.
+                Search naturally using a service, city, or neighborhood area. Example: plumber Emana Yaounde.
               </Text>
             </View>
           )}
         </View>
 
         <View style={styles.searchPanel}>
-          <Text style={styles.panelTitle}>Search services</Text>
+          <Text style={styles.panelTitle}>What are you looking for?</Text>
           <TextInput
             value={query}
             onChangeText={onChangeQuery}
-            placeholder="What service do you need?"
-            style={styles.searchInput}
-          />
-
-          <TextInput
-            value={city}
-            onChangeText={onChangeCity}
-            placeholder="City, for example Yaounde or Douala"
-            autoCapitalize="words"
-            style={styles.searchInput}
-          />
-
-          <TextInput
-            value={area}
-            onChangeText={onChangeArea}
-            placeholder="Area, for example Emana, Mvog-Mbi, Bonaberi"
-            autoCapitalize="words"
-            style={styles.searchInput}
+            onSubmitEditing={onSubmitSearch}
+            returnKeyType="search"
+            placeholder="Try: plumber Emana, tailor Bonaberi, tutor Yaounde"
+            style={styles.smartSearchInput}
           />
 
           <CategoryDropdown
@@ -93,17 +78,19 @@ export default function HomeScreen({
             onClose={onCloseCategory}
             onSelect={onSelectCategory}
           />
+
+          <GradientButton title={isSearching ? 'Searching...' : 'Search'} onPress={onSubmitSearch} disabled={isSearching} />
         </View>
 
         <View style={styles.sectionHeaderRow}>
           <Text style={styles.sectionTitle}>Available services</Text>
-          <Text style={styles.resultCount}>{skills.length} found</Text>
+          <Text style={styles.resultCount}>{isSearching ? 'Searching...' : `${skills.length} found`}</Text>
         </View>
 
         {skills.length === 0 ? (
           <View style={styles.emptyBox}>
-            <Text style={styles.emptyTitle}>No services found</Text>
-            <Text style={styles.emptyText}>Try a service, city, or area like plumber, Yaounde, Emana, Douala, or Bonaberi.</Text>
+            <Text style={styles.emptyTitle}>{isSearching ? 'Searching services...' : 'No services found'}</Text>
+            <Text style={styles.emptyText}>Try a natural search like plumber Emana, carpenter Douala, or tailor Bonaberi.</Text>
           </View>
         ) : (
           <View style={styles.grid}>
@@ -212,13 +199,13 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     marginBottom: 10
   },
-  searchInput: {
+  smartSearchInput: {
     backgroundColor: '#f8fafc',
-    borderColor: '#e5e7eb',
+    borderColor: '#bfdbfe',
     borderWidth: 1,
-    borderRadius: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 13,
+    borderRadius: 18,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
     fontSize: 15,
     marginBottom: 10
   },
