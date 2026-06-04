@@ -19,12 +19,11 @@ import { validateInquiry } from './src/utils/validators';
 
 export default function App() {
   const [query, setQuery] = useState('');
-  const [city, setCity] = useState('');
-  const [area, setArea] = useState('');
   const [category, setCategory] = useState('');
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [screen, setScreen] = useState('home');
   const [skills, setSkills] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [activeProvider, setActiveProvider] = useState(null);
   const [profileProvider, setProfileProvider] = useState(null);
@@ -36,27 +35,22 @@ export default function App() {
   const [inquiryMessage, setInquiryMessage] = useState('');
   const [isSubmittingInquiry, setIsSubmittingInquiry] = useState(false);
 
+  const runSearch = async ({ searchQuery = query, selectedCategory = category } = {}) => {
+    try {
+      setIsSearching(true);
+      const results = await searchSkillsFromDataSource({ query: searchQuery, category: selectedCategory });
+      setSkills(results);
+    } catch (error) {
+      Alert.alert('Unable to load services', 'Please check your connection and try again.');
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   useEffect(() => {
-    let mounted = true;
-
-    const loadSkills = async () => {
-      try {
-        const results = await searchSkillsFromDataSource({ query, category, city, area });
-        if (mounted) setSkills(results);
-      } catch (error) {
-        if (mounted) {
-          setSkills([]);
-          Alert.alert('Unable to load services', 'Please check your connection and try again.');
-        }
-      }
-    };
-
-    loadSkills();
-
-    return () => {
-      mounted = false;
-    };
-  }, [query, category, city, area]);
+    runSearch({ searchQuery: '', selectedCategory: '' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const openSkillDetail = async (skill) => {
     try {
@@ -105,6 +99,11 @@ export default function App() {
   const handleCategorySelect = (item) => {
     setCategory(item);
     setCategoryOpen(false);
+    runSearch({ searchQuery: query, selectedCategory: item });
+  };
+
+  const handleSearchSubmit = () => {
+    runSearch({ searchQuery: query, selectedCategory: category });
   };
 
   const handleWhatsAppPress = async () => {
@@ -166,14 +165,12 @@ export default function App() {
       {screen === 'home' && (
         <HomeScreen
           query={query}
-          city={city}
-          area={area}
           category={category}
           categoryOpen={categoryOpen}
           skills={skills}
+          isSearching={isSearching}
           onChangeQuery={setQuery}
-          onChangeCity={setCity}
-          onChangeArea={setArea}
+          onSubmitSearch={handleSearchSubmit}
           onOpenCategory={() => setCategoryOpen(true)}
           onCloseCategory={() => setCategoryOpen(false)}
           onSelectCategory={handleCategorySelect}
